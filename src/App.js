@@ -57,9 +57,9 @@ function App() {
   return (
    <>
     <div className="flex items-center justify-center h-screen body-font font-roboto-mono">
-      <div className="flex flex-col items-center justify-center w-full gap-4 p-10 rounded-lg sm:w-11/12 xl:w-3/4 sha">
+      <div className="flex flex-col items-center justify-center w-full gap-4 p-0 rounded-lg md:p-10 sm:w-11/12 xl:w-3/4">
 
-          <h2 className="my-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl animate-fade-down animate-once animate-duration-500 animate-delay-200 animate-ease-out">
+          <h2 className="my-4 text-2xl font-bold text-white md:text-5xl lg:text-6xl animate-fade-down animate-once animate-duration-500 animate-delay-200 animate-ease-out">
               To Do List
           </h2>
 
@@ -82,15 +82,15 @@ function App() {
           </div>
           
           {list.length > 0 ? 
-            <div className="w-11/12 p-4 rounded-md menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
+            <div className="w-11/12 p-1 pb-3 rounded-md md:p-4 menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
             
-              <div className="flex justify-between my-2">
-                <h2 className="text-lg menu-title">Your items:</h2>
-                <div className="text-xs tabs tabs-boxed bg-none">
+              <div className="justify-between my-2 sm:flex ">
+                <h2 className="text-md md:text-xl menu-title">Your items:</h2>
+                <div className="text-xs justify-evenly tabs tabs-boxed bg-none">
                   <TabButton 
                     isSelected={selectedTopic === 'All'} 
                     onSelect={() => handleSelect('All')}>
-                      All
+                      All   
                   </TabButton>
                   <TabButton 
                     isSelected={selectedTopic === 'Active'} 
@@ -106,7 +106,7 @@ function App() {
               </div>
               
               
-              <ul className="mx-6 mb-4 animate-fade-up animate-once animate-duration-300 animate-delay-200 ">
+              <ul className="mb-4 md:mx-6 animate-fade-up animate-once animate-duration-300 animate-delay-200 ">
                 <List myList={list} onSelect={handleRemove}/>
                 
               </ul>
