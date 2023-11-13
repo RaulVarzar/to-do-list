@@ -5,16 +5,7 @@ import TabButton from './components/TabButton';
 import { v4 as uuidv4 } from 'uuid';
 
 // const initialList = ['Learn JavaScript', 'Start my first React project', 'Build a complete app with database']
-const initialList = [
-  {
-    id: '1',
-    name: 'These are your default items',
-  },
-  {
-    id: '2',
-    name: 'You can filter, set as completed, delete or add more',
-  }
-];
+const initialList = [];
 
 function App() {
 
@@ -30,6 +21,7 @@ function App() {
 
   function handleChange(event) { // get data from input field while typing
     setName(event.target.value);
+    setNameIsEmpty(false)
   }
 
   function handleAdd() { //add input data to list using the button
@@ -38,7 +30,6 @@ function App() {
       setList(newList);
       setName('')
     }
-    
   }
 
   function enterToList(e) { //add input data to list by pressing ENTER
@@ -50,7 +41,6 @@ function App() {
       }
       else {
         setNameIsEmpty(true)
-        console.log('empty')
       }
     }
   }
@@ -60,6 +50,7 @@ function App() {
     const objWithIdIndex = newList.findIndex((obj) => obj.id === id);
     newList.splice(objWithIdIndex, 1);
     setList(newList);
+    setNameIsEmpty(false)
   }
   
   
@@ -74,9 +65,11 @@ function App() {
 
           <div className="relative w-full max-w-lg p-3 animate-fade-down animate-once animate-duration-500 animate-delay-300 animate-easeout">
               <input 
-                type="text" 
-                className={"w-full p-3 text-center placeholder-opacity-0 transition duration-00 ease-in-outrounded-md animate-shake bg-base-200 hover:bg-base-300 hover:cursor-text" + (nameIsEmpty ? "animate-twice animate-duration-200 animate-delay-100 animate-ease-out bg-red-700" : "")} 
-                placeholder="Enter a new item" 
+                type="text"
+                autoFocus 
+                className={"outline-none rounded-md w-full p-3 text-center placeholder-opacity-0 transition duration-300 ease-in-outrounded-md bg-base-200 hover:bg-base-300 hover:cursor-text" 
+                          + (nameIsEmpty ? "  bg-warning" : "")} 
+                placeholder={nameIsEmpty? "Please type something" : "Enter a new item"} 
                 value={name} 
                 onChange={handleChange} 
                 onKeyDown={enterToList}/>
@@ -88,7 +81,8 @@ function App() {
               </button>
           </div>
           
-          <div className="w-11/12 p-4 rounded-md menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-500 animate-ease-out">
+          {list.length > 0 ? 
+            <div className="w-11/12 p-4 rounded-md menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
             
               <div className="flex justify-between my-2">
                 <h2 className="text-lg menu-title">Your items:</h2>
@@ -112,14 +106,15 @@ function App() {
               </div>
               
               
-              <ul className="mx-6 mb-4">
+              <ul className="mx-6 mb-4 animate-fade-up animate-once animate-duration-300 animate-delay-200 ">
                 <List myList={list} onSelect={handleRemove}/>
                 
               </ul>
               <p className="place-self-center">{list.length} items</p>
 
-          </div>
-          
+            </div>
+          :" "
+          }
           
       </div>
 
