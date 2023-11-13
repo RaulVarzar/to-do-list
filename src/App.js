@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from 'react';
-// import List from './components/List';
+import List from './components/List';
 import TabButton from './components/TabButton';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -8,16 +8,20 @@ import { v4 as uuidv4 } from 'uuid';
 const initialList = [
   {
     id: '1',
-    name: 'This is your first item. You can delete it or add more',
+    name: 'These are your default items',
   },
+  {
+    id: '2',
+    name: 'You can filter, set as completed, delete or add more',
+  }
 ];
 
 function App() {
 
   const [list, setList] = useState(initialList); // used to update the list
   const [name, setName] = useState(''); // used to update the input field
-  const [checked, setChecked] = useState(false); 
-
+  // const [checked, setChecked] = useState(false); 
+  const [nameIsEmpty, setNameIsEmpty] = useState()
   const [selectedTopic, setSelectedTopic] = useState('All');
 
   function handleSelect(test){
@@ -28,21 +32,26 @@ function App() {
     setName(event.target.value);
   }
 
-  const handleCheckbox = () => {  // change state of checkbox
-    setChecked(!checked); 
-  }; 
-
   function handleAdd() { //add input data to list using the button
-    const newList = [{id: uuidv4(), name}, ...list];
-    setList(newList);
-    setName('')
-  }
-
-  function enterToList(e) { //add input data to list by pressing ENTER
-    if (e.key === 'Enter') {
+    if (name.trim().length !== 0){
       const newList = [{id: uuidv4(), name}, ...list];
       setList(newList);
       setName('')
+    }
+    
+  }
+
+  function enterToList(e) { //add input data to list by pressing ENTER
+    if (e.key === 'Enter') { 
+      if (name.trim().length !== 0)  {
+      const newList = [{id: uuidv4(), name}, ...list];
+      setList(newList);
+      setName('')
+      }
+      else {
+        setNameIsEmpty(true)
+        console.log('empty')
+      }
     }
   }
 
@@ -57,22 +66,33 @@ function App() {
   return (
    <>
     <div className="flex items-center justify-center h-screen body-font font-roboto-mono">
-      <div className="flex flex-col items-center justify-center w-full gap-4 p-10 rounded-lg sm:border border-info-content sm:w-11/12 xl:w-1/2 sha">
+      <div className="flex flex-col items-center justify-center w-full gap-4 p-10 rounded-lg sm:w-11/12 xl:w-3/4 sha">
 
-          <h2 className="my-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+          <h2 className="my-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl animate-fade-down animate-once animate-duration-500 animate-delay-200 animate-ease-out">
               To Do List
           </h2>
 
-          <div className="relative w-full max-w-lg p-3">
-              <input type="text" className="w-full p-3 rounded-md bg-base-200 focus:bg-base-300" value={name} onChange={handleChange} onKeyDown={enterToList}/>
-              <button type="submit" className="absolute right-6 top-6" onClick={handleAdd}>ADD</button>
+          <div className="relative w-full max-w-lg p-3 animate-fade-down animate-once animate-duration-500 animate-delay-300 animate-easeout">
+              <input 
+                type="text" 
+                className={"w-full p-3 text-center placeholder-opacity-0 transition duration-00 ease-in-outrounded-md animate-shake bg-base-200 hover:bg-base-300 hover:cursor-text" + (nameIsEmpty ? "animate-twice animate-duration-200 animate-delay-100 animate-ease-out bg-red-700" : "")} 
+                placeholder="Enter a new item" 
+                value={name} 
+                onChange={handleChange} 
+                onKeyDown={enterToList}/>
+              <button 
+                type="submit" 
+                className="absolute font-bold right-7 top-6" 
+                onClick={handleAdd}>
+                  {name ? <p>ADD</p> : ""}
+              </button>
           </div>
           
-          <div className="w-11/12 p-4 rounded-md menu bg-base-200">
+          <div className="w-11/12 p-4 rounded-md menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-500 animate-ease-out">
             
               <div className="flex justify-between my-2">
                 <h2 className="text-lg menu-title">Your items:</h2>
-                <div className="text-xs tabs tabs-boxed">
+                <div className="text-xs tabs tabs-boxed bg-none">
                   <TabButton 
                     isSelected={selectedTopic === 'All'} 
                     onSelect={() => handleSelect('All')}>
@@ -90,18 +110,11 @@ function App() {
                   </TabButton>
                 </div>
               </div>
-    
+              
+              
               <ul className="mx-6 mb-4">
-                {/* <List myList={list} handleRemove={handleRemove}/> */}
-                {list.map((item) => 
-                  <li key={item.id} className="mt-1">
-                      <label className="items-center justify-start py-3 pr-2 cursor-pointer label justify-items-end group">
-                          <input type="checkbox" className="checkbox" onChange={handleCheckbox}/>
-                          <span className="ml-2 label-text justify-self-start">{item.name}</span> 
-                          <button className="absolute hidden r-0 btn btn-sm btn-error btn-outline group-hover:inline" onClick={() => handleRemove(item.id)}>Delete</button>
-                      </label>
-                  </li>
-                 )}
+                <List myList={list} onSelect={handleRemove}/>
+                
               </ul>
               <p className="place-self-center">{list.length} items</p>
 

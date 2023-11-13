@@ -9,7 +9,7 @@ module.exports = {
       center: true,
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"), require('tailwindcss-animated')],
   daisyui: {
     themes: ["light", "dark", "aqua"],
   },
