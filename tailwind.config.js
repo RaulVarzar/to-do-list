@@ -12,9 +12,7 @@ module.exports = {
       xl: '1440px',
     },
     extend: {},
-    container: {
-      center: true,
-    },
+   
   },
   plugins: [require("daisyui"), require('tailwindcss-animated')],
   daisyui: {

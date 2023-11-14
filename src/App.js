@@ -8,13 +8,12 @@ import TabButton from './components/TabButton';
 const initialList = [
   { 
     id: Math.random(), 
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vel mauris non sapien rutrum rhoncus.',
-    status: 'Active'
+    content: 'This is a test item',
+   
   },
   { 
     id: Math.random(), 
-    content: 'test item',
-    status: 'Active'
+    content: 'You can add more using the input field',
   }
 ];
 
@@ -36,44 +35,38 @@ function App() {
     if (input.trim().length !== 0){
       const newItem = {
         id: Math.random(), 
-        content: input,
-        status: 'Active'
+        content: input
       }
       setList([newItem, ...list]);
       setInput('')
     }
-    
   }
 
-  // function enterToList(e) { //add input data to list by pressing ENTER
-  //   if (e.key === 'Enter') { 
-  //     if (input.trim().length !== 0)  {
-  //       const newItem = {
-  //         id: Math.random(), 
-  //         content: input,
-  //         status: 'Active'
-  //       }
-  //       setList([newItem, ...list]);
-  //       setInput('')
-  //     }
-  //     else {
-  //       setNameIsEmpty(true)
-  //     }
-  //   }
-  // }
+  function enterToList(e) { //add input data to list by pressing ENTER
+    if (e.key === 'Enter') { 
+      if (input.trim().length !== 0)  {
+        const newItem = {
+          id: Math.random(), 
+          content: input,
+        }
+        setList([newItem, ...list]);
+        setInput('')
+      }
+      else {
+        setNameIsEmpty(true)
+      }
+    }
+  }
 
   function handleRemove(id) { // remove item from the list by id
     const newList = list.filter ( (item) => item.id != id)
     setList(newList)
-    setNameIsEmpty(false)
   }
 
   function moveToCompleted(item) {
     setCompletedList([...completedList, item])
     handleRemove(item.id)
   }
-  console.log("Active:",list)
-  console.log("Completed:",completedList)
 
   return (
    <>
@@ -93,22 +86,22 @@ function App() {
                 placeholder={nameIsEmpty? "Please type something" : "Enter a new item"} 
                 value={input} 
                 onChange={handleChange} 
-                // onKeyDown={enterToList}
+                onKeyDown={enterToList}
               />
               <button 
                 type="submit" 
                 className="absolute font-bold right-7 top-6" 
                 onClick={() => handleAdd(input)}>
-                  {input ? <p>ADD</p> : ""}
+                  {input ? <p className='text-info animate-fade-right animate-once animate-duration-200 animate-delay-0 animate-ease-out'>ADD</p> : ""}
               </button>
           </div>
           
           
-            <div className="flex w-11/12 p-1 py-3 rounded-md md:p-4 menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
+          <div className="w-full p-1 py-3 text-center rounded-md md:p-4 bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
             
               <div className="w-full px-4 my-2 text-center">
 
-                <h2 className="text-md md:text-xl menu-title justify-self-start">Current items</h2>
+                <h2 className="text-md md:text-xl justify-self-start">Current items</h2>
 
                 <div className="p-0 mx-auto text-xs sm:justify-center tabs tabs-bordered ">
                   <TabButton 
@@ -126,13 +119,15 @@ function App() {
               </div>
               
               
-              <ul className="mb-4 md:mx-6 animate-fade-up animate-once animate-duration-300 animate-delay-200">
+              <ul className="my-6 text-left md:mx-6 animate-fade-up animate-once animate-duration-300 animate-delay-200">
+
+
               {selectedTopic === "Active" ? 
                   <div>{list.map((item) => 
                     <ListItem 
                       key={item.id} 
-                      item={item} 
-                      onSelect={(id) => handleRemove(id)} 
+                      item={item.content} 
+                      deleteItem={() => handleRemove(item.id)} 
                       addToCompleted={() => moveToCompleted(item)} 
                       complete = {false}
                     />
@@ -142,8 +137,7 @@ function App() {
                   <div>{completedList.map((item) => 
                     <ListItem 
                       key={item.id} 
-                      item={item} 
-                      onSelect={(id) => handleRemove(id)} 
+                      item={item.content} 
                       addToCompleted={() => moveToCompleted(item)} 
                       complete = {true}
                     />)}
@@ -151,7 +145,7 @@ function App() {
                 }
               </ul>
 
-              <p className="place-self-center">
+              <p className="mx-auto">
               {selectedTopic === "Active" ? `${list.length} ` : `${completedList.length} `}
                 items
               </p>
