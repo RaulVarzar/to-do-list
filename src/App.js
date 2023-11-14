@@ -71,9 +71,9 @@ function App() {
   return (
    <>
     <div className="flex items-center justify-center mt-10 body-font font-roboto-mono">
-      <div className="flex flex-col items-center justify-center w-full gap-1 p-0 rounded-lg md:p-10 sm:w-11/12 xl:w-3/4">
+      <div className="flex flex-col items-center justify-center w-full md:p-10 sm:w-11/12 xl:w-3/4">
 
-          <h2 className="my-4 text-2xl font-bold text-white md:text-5xl lg:text-6xl animate-fade-down animate-once animate-duration-500 animate-delay-200 animate-ease-out">
+          <h2 className="my-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl animate-fade-down animate-once animate-duration-500 animate-delay-200 animate-ease-out">
               To Do List
           </h2>
 
@@ -81,7 +81,7 @@ function App() {
               <input 
                 type="text"
                 autoFocus 
-                className={"outline-none rounded-md w-full p-3 text-center placeholder-opacity-0 transition duration-300 ease-in-outrounded-md bg-base-200 hover:bg-base-300 hover:cursor-text" 
+                className={"outline-none p-3 text-center duration-300 w-full ease-in-out rounded-lg bg-base-200 hover:bg-base-300 hover:cursor-text" 
                           + (nameIsEmpty ? "  bg-warning" : "")} 
                 placeholder={nameIsEmpty? "Please type something" : "Enter a new item"} 
                 value={input} 
@@ -97,7 +97,7 @@ function App() {
           </div>
           
           
-          <div className="w-full p-1 py-3 text-center rounded-md md:p-4 bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
+          <div className="w-full p-1 py-3 text-center sm:rounded-lg md:p-4 bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
             
               <div className="w-full px-4 my-2 text-center">
 
@@ -146,8 +146,10 @@ function App() {
               </ul>
 
               <p className="mx-auto">
-              {selectedTopic === "Active" ? `${list.length} ` : `${completedList.length} `}
-                items
+              
+              {selectedTopic + " "}
+                items:
+                {selectedTopic === "Active" ? `${list.length} ` : `${completedList.length} `}
               </p>
 
             </div>

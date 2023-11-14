@@ -2,7 +2,7 @@ export default function ListItem ({item, deleteItem, addToCompleted, complete}){
         return(
             <>  
                 <li className="flex justify-between p-3 mt-1 transition duration-200 border-white rounded-xl basis:1/2 animate-flip-down animate-duration-500 animate-once hover:bg-base-100">
-                    <p className="text-xs grow md:text-md lg:text-lg sm:ml-2">{item}</p> 
+                    <p className="mr-4 text-xs grow md:text-md lg:text-lg sm:ml-2">{item}</p> 
                         {!complete ?  
                             <div className="join">                            
                                 <button className="btn btn-sm btn-primary btn-outline join-item" onClick={() => addToCompleted()}>Complete</button> 
