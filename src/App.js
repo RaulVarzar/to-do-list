@@ -2,71 +2,79 @@ import './App.css';
 import { useState } from 'react';
 import ListItem from './components/List';
 import TabButton from './components/TabButton';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 // const initialList = ['Learn JavaScript', 'Start my first React project', 'Build a complete app with database']
 const initialList = [
   { 
-    id:'1', 
-    name:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vel mauris non sapien rutrum rhoncus.'
+    id: Math.random(), 
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vel mauris non sapien rutrum rhoncus.',
+    status: 'Active'
+  },
+  { 
+    id: Math.random(), 
+    content: 'test item',
+    status: 'Active'
   }
 ];
 
 function App() {
-  const templist={
-    components: {
-      id: '1',
-      name: 'Default text',
-      status: `Active`
-    }
-  }
-  const [list2, setList2] = useState(templist); // used to update the list
-
   const [list, setList] = useState(initialList); // used to update the list
-  const [name, setName] = useState(''); // used to update the input field
+  const [input, setInput] = useState(''); // used to update the input field
   // const [checked, setChecked] = useState(false); 
   const [nameIsEmpty, setNameIsEmpty] = useState()
   const [selectedTopic, setSelectedTopic] = useState('Active');
-  function handleSelect(test){
-      setSelectedTopic(test)
-  }
+  
+  const [completedList, setCompletedList] = useState([])
 
   function handleChange(event) { // get data from input field while typing
-    setName(event.target.value);
+    setInput(event.target.value);
     setNameIsEmpty(false)
   }
 
-  function handleAdd() {  // add input data to list using the button
-    if (name.trim().length !== 0){
-      const newList = [{id: uuidv4(), name, status: "Active"}, ...list];
-      setList2({id: uuidv4()});
-      setList(newList);
-      setName('')
+  function handleAdd(e) {  // add input data to list using the button
+    if (input.trim().length !== 0){
+      const newItem = {
+        id: Math.random(), 
+        content: input,
+        status: 'Active'
+      }
+      setList([newItem, ...list]);
+      setInput('')
     }
+    
   }
 
-  function enterToList(e) { //add input data to list by pressing ENTER
-    if (e.key === 'Enter') { 
-      if (name.trim().length !== 0)  {
-      const newList = [{id: uuidv4(), name, status: "Active"}, ...list];
-      setList(newList);
-      setName('')
-      }
-      else {
-        setNameIsEmpty(true)
-      }
-    }
-  }
+  // function enterToList(e) { //add input data to list by pressing ENTER
+  //   if (e.key === 'Enter') { 
+  //     if (input.trim().length !== 0)  {
+  //       const newItem = {
+  //         id: Math.random(), 
+  //         content: input,
+  //         status: 'Active'
+  //       }
+  //       setList([newItem, ...list]);
+  //       setInput('')
+  //     }
+  //     else {
+  //       setNameIsEmpty(true)
+  //     }
+  //   }
+  // }
 
   function handleRemove(id) { // remove item from the list by id
-    const newList = [...list];
-    const objWithIdIndex = newList.findIndex((obj) => obj.id === id);
-    newList.splice(objWithIdIndex, 1);
-    setList(newList);
+    const newList = list.filter ( (item) => item.id != id)
+    setList(newList)
     setNameIsEmpty(false)
   }
-  
-  
+
+  function moveToCompleted(item) {
+    setCompletedList([...completedList, item])
+    handleRemove(item.id)
+  }
+  console.log("Active:",list)
+  console.log("Completed:",completedList)
+
   return (
    <>
     <div className="flex items-center justify-center mt-10 body-font font-roboto-mono">
@@ -83,18 +91,19 @@ function App() {
                 className={"outline-none rounded-md w-full p-3 text-center placeholder-opacity-0 transition duration-300 ease-in-outrounded-md bg-base-200 hover:bg-base-300 hover:cursor-text" 
                           + (nameIsEmpty ? "  bg-warning" : "")} 
                 placeholder={nameIsEmpty? "Please type something" : "Enter a new item"} 
-                value={name} 
+                value={input} 
                 onChange={handleChange} 
-                onKeyDown={enterToList}/>
+                // onKeyDown={enterToList}
+              />
               <button 
                 type="submit" 
                 className="absolute font-bold right-7 top-6" 
-                onClick={handleAdd}>
-                  {name ? <p>ADD</p> : ""}
+                onClick={() => handleAdd(input)}>
+                  {input ? <p>ADD</p> : ""}
               </button>
           </div>
           
-          {list.length > 0 ? 
+          
             <div className="flex w-11/12 p-1 py-3 rounded-md md:p-4 menu bg-base-200 animate-fade-down animate-once animate-duration-500 animate-delay-0 animate-ease-out">
             
               <div className="w-full px-4 my-2 text-center">
@@ -104,12 +113,12 @@ function App() {
                 <div className="p-0 mx-auto text-xs sm:justify-center tabs tabs-bordered ">
                   <TabButton 
                     isSelected={selectedTopic === 'Active'} 
-                    onSelect={() => handleSelect('Active')}>
+                    onSelect={() => setSelectedTopic('Active')}>
                       Active
                   </TabButton>
                   <TabButton 
                     isSelected={selectedTopic === 'Completed'} 
-                    onSelect={() => handleSelect('Completed')}>
+                    onSelect={() => setSelectedTopic('Completed')}>
                       Completed
                   </TabButton>
                 </div>
@@ -117,17 +126,38 @@ function App() {
               </div>
               
               
-              <ul className="mb-4 md:mx-6 animate-fade-up animate-once animate-duration-300 animate-delay-200 ">
-
-              { list.map((item) => <ListItem key={item.id} item={item} onSelect={handleRemove} /> )}
-
-
+              <ul className="mb-4 md:mx-6 animate-fade-up animate-once animate-duration-300 animate-delay-200">
+              {selectedTopic === "Active" ? 
+                  <div>{list.map((item) => 
+                    <ListItem 
+                      key={item.id} 
+                      item={item} 
+                      onSelect={(id) => handleRemove(id)} 
+                      addToCompleted={() => moveToCompleted(item)} 
+                      complete = {false}
+                    />
+                    )}
+                  </div> 
+                  :
+                  <div>{completedList.map((item) => 
+                    <ListItem 
+                      key={item.id} 
+                      item={item} 
+                      onSelect={(id) => handleRemove(id)} 
+                      addToCompleted={() => moveToCompleted(item)} 
+                      complete = {true}
+                    />)}
+                  </div> 
+                }
               </ul>
-              <p className="place-self-center">{list.length} items</p>
+
+              <p className="place-self-center">
+              {selectedTopic === "Active" ? `${list.length} ` : `${completedList.length} `}
+                items
+              </p>
 
             </div>
-          :" "
-          }
+          
       </div>
 
     </div>
